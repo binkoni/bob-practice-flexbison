@@ -3,9 +3,11 @@
 int yylex();
 int yyerror(char* s);
 %}
-%token NUM ADD SUB MUL DIV ABS EOL
+%token NUM ADD SUB MUL DIV ABS EOL OP CP
 %%
 calclist:
+        | EOL
+        | calclist EOL
         | calclist exp EOL { printf("= %d\n", $2); }
         ;
 exp: factor
@@ -17,8 +19,8 @@ factor: term
       | factor DIV term { $$ = $1 / $3; }
 term: NUM
     | ABS term { $$ = $2 >= 0 ? $2 : - $2; }
+    | OP exp CP { $$ = $2; }
     ;
-
 %%
 int main(int argc, char** argv)
 {
